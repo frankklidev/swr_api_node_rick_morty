@@ -2,6 +2,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useCharacters } from "../hooks/useCharacters";
+import './Character.css'
 
 const Wrapper = styled.div`
     margin: 50px auto;
@@ -40,7 +41,7 @@ const Characters = () => {
     const { characters, isLoading, isError } = useCharacters(pageIndex);
   
     if (isError) return <div>Failed to fetch characters.</div>;
-    if (isLoading) return <h2>Loading...</h2>;
+    if (isLoading) return <div class="loader"></div>;
   
     return (
       <>
