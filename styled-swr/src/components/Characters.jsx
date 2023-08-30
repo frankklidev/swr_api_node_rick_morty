@@ -1,7 +1,7 @@
 
 import { useState } from "react";
-import useSWR from "swr";
 import styled from "styled-components";
+import { useCharacters } from "../hooks/useCharacters";
 
 const Wrapper = styled.div`
     margin: 50px auto;
@@ -37,37 +37,27 @@ const Container = styled.div`
 
 const Characters = () => {
     const [pageIndex, setPageIndex] = useState(1);
-
-    const fetcher = (...args) => fetch(...args).then((res) => res.json());
-
-    const { data, error, isLoading } = useSWR(
-        `https://rickandmortyapi.com/api/character/?page=${pageIndex}`,
-        fetcher,
-    );
-
-    if (error) return <div>Failed to fetch characters.</div>;
+    const { characters, isLoading, isError } = useCharacters(pageIndex);
+  
+    if (isError) return <div>Failed to fetch characters.</div>;
     if (isLoading) return <h2>Loading...</h2>;
-
+  
     return (
-        <>
-            <Container>
-                {data.results.map((character) => (
-                    <Character key={character.id}>
-                        <img width={100} height={100} src={character.image} />
-                        <div>{character.name}</div>
-                    </Character>
-                ))}
-            </Container>
-            <Wrapper>
-                <Button onClick={() => setPageIndex(pageIndex - 1)}>
-                    Previous
-                </Button>
-                <Button onClick={() => setPageIndex(pageIndex + 1)}>
-                    Next
-                </Button>
-            </Wrapper>
-        </>
+      <>
+        <Container>
+          {characters.map((character) => (
+            <Character key={character.id}>
+              <img width={100} height={100} src={character.image} />
+              <div>{character.name}</div>
+            </Character>
+          ))}
+        </Container>
+        <Wrapper>
+          <Button onClick={() => setPageIndex(pageIndex - 1)}>Previous</Button>
+          <Button onClick={() => setPageIndex(pageIndex + 1)}>Next</Button>
+        </Wrapper>
+      </>
     );
-};
-
-export default Characters;
+  };
+  
+  export default Characters;
